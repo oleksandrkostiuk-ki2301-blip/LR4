@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Лабораторна робота - Об'єкти та масиви</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 15px; }
+    h2 { margin-top: 25px; }
+    button { padding: 8px 14px; margin: 3px; cursor: pointer; }
+    #output { background: #f4f4f4; border: 1px solid #ccc; border-radius: 6px;
+              padding: 12px; min-height: 120px; margin-top: 20px; }
+    #output p { margin: 4px 0; }
+    .task { font-weight: bold; margin-top: 10px !important; }
+  </style>
+</head>
+<body>
+  <h1>Лабораторна робота: об'єкти та масиви</h1>
+
+  <h2>Приклади</h2>
+  <button onclick="task1()">Завдання 1</button>
+  <button onclick="task2()">Завдання 2</button>
+  <button onclick="task3()">Завдання 3</button>
+  <button onclick="task4()">Завдання 4</button>
+
+  <h2>Додаткові завдання</h2>
+  <button onclick="taskExtra()">markAsRead і calculateAverageYear</button>
+
+  <h2>Індивідуальний проєкт: курси для навчання</h2>
+  <button onclick="showCourses()">Показати курси</button>
+  <button onclick="sortCourses()">Сортувати за тривалістю</button>
+  <button onclick="showNotCompleted()">Непройдені курси</button>
+  <button onclick="findCourse()">Знайти за платформою</button>
+  <button onclick="addCourse()">Додати курс</button>
+  <button onclick="completeCourse()">Позначити завершеним</button>
+  <button onclick="averageDuration()">Середня тривалість</button>
+
+  <h2>Результат</h2>
+  <button onclick="clearOutput()">Очистити</button>
+  <div id="output"></div>
+
+  <script>
+    function print(text, isTitle) {
+      const p = document.createElement('p');
+      p.textContent = text;
+      if (isTitle) p.className = 'task';
+      document.getElementById('output').appendChild(p);
+    }
+    function clearOutput() {
+      document.getElementById('output').innerHTML = '';
+    }
+
+    function createBook(title, author, year, isRead) {
+      return {
+        title: title,
+        author: author,
+        year: year,
+        isRead: isRead,
+        bookInfo() {
+          print(`Назва: ${this.title}, Автор: ${this.author}, Рік видання: ${this.year}, Прочитана: ${this.isRead ? 'Так' : 'Ні'}`);
+        },
+        markAsRead() {
+          this.isRead = true;
+        }
+      };
+    }
+
+    function getDefaultLibrary() {
+      return [
+        createBook("Harry Potter and the Sorcerer's Stone", 'J.K. Rowling', 1997, true),
+        createBook('The Hobbit', 'J.R.R. Tolkien', 1937, false),
+        createBook('1984', 'George Orwell', 1949, true)
+      ];
+    }
+
+    function task1() {
+      print('Завдання 1', true);
+
+      let book = {
+        title: "Harry Potter and the Sorcerer's Stone",
+        author: 'J.K. Rowling',
+        year: 1997,
+        isRead: true,
+        bookInfo() {
+          print(`Назва: ${this.title}, Автор: ${this.author}, Рік видання: ${this.year}, Прочитана: ${this.isRead ? 'Так' : 'Ні'}`);
+        }
+      };
+
+      book.bookInfo();
+      book.isRead = !book.isRead;
+      book.bookInfo();
+    }
+
+    function task2() {
+      print('Завдання 2', true);
+
+      let library = getDefaultLibrary();
+
+      function displayLibrary() {
+        library.forEach(book => book.bookInfo());
+      }
+
+      print('Бібліотека:');
+      displayLibrary();
+
+      library.push(createBook('The Great Gatsby', 'F. Scott Fitzgerald', 1925, false));
+      print('Після додавання нової книги:');
+      displayLibrary();
+    }
+
+    function task3() {
+      print('Завдання 3', true);
+
+      let library = getDefaultLibrary();
+
+      library.sort((a, b) => a.year - b.year);
+      print('Відсортовані книги за роком видання:');
+      library.forEach(book => book.bookInfo());
+
+      let unreadBooks = library.filter(book => !book.isRead);
+      print('Непрочитані книги:');
+      unreadBooks.forEach(book => book.bookInfo());
+
+      let tolkienBook = library.find(book => book.author === 'J.R.R. Tolkien');
+      print('Книга Толкіна:');
+      tolkienBook.bookInfo();
+    }
+
+    function task4() {
+      print('Завдання 4', true);
+
+      let library = getDefaultLibrary();
+
+      function displayLibrary() {
+        library.forEach(book => book.bookInfo());
+      }
+
+      function addBookToLibrary() {
+        let title = prompt('Введіть назву книги:');
+        let author = prompt('Введіть автора книги:');
+        let year = +prompt('Введіть рік видання книги:');
+        let isRead = confirm('Чи прочитана книга?');
+
+        library.push(createBook(title, author, year, isRead));
+        displayLibrary();
+      }
+
+      addBookToLibrary();
+    }
+
+    function taskExtra() {
+      print('Додаткові завдання', true);
+
+      let library = getDefaultLibrary();
+
+      function calculateAverageYear(array) {
+        const sum = array.reduce((total, book) => total + book.year, 0);
+        return sum / array.length;
+      }
+
+      print('Перед markAsRead:');
+      library[1].bookInfo();
+      library[1].markAsRead();
+      print('Після markAsRead:');
+      library[1].bookInfo();
+
+      print('Середній рік видання: ' + calculateAverageYear(library));
+    }
+
+    function createCourse(name, platform, duration, completed, certificate) {
+      return {
+        name: name,
+        platform: platform,
+        duration: duration,
+        completed: completed,
+        certificate: certificate,
+        courseInfo() {
+          print(`Назва: ${this.name}, Платформа: ${this.platform}, Тривалість: ${this.duration} год, Завершено: ${this.completed ? 'Так' : 'Ні'}, Сертифікат: ${this.certificate ? 'Так' : 'Ні'}`);
+        },
+        markAsCompleted() {
+          this.completed = true;
+        }
+      };
+    }
+
+    let courses = [
+      createCourse('JavaScript для початківців', 'Prometheus', 40, true, true),
+      createCourse('HTML і CSS', 'Coursera', 25, false, false),
+      createCourse('Python Basics', 'Udemy', 60, false, true),
+      createCourse('Основи UX дизайну', 'EdX', 30, true, false)
+    ];
+
+    function showCourses() {
+      print('Список курсів:', true);
+      courses.forEach(course => course.courseInfo());
+    }
+
+    function sortCourses() {
+      print('Курси за тривалістю (зростання):', true);
+      [...courses].sort((a, b) => a.duration - b.duration).forEach(course => course.courseInfo());
+    }
+
+    function showNotCompleted() {
+      print('Незавершені курси:', true);
+      const notCompleted = courses.filter(course => !course.completed);
+      if (notCompleted.length === 0) {
+        print('Усі курси завершено');
+      }
+      notCompleted.forEach(course => course.courseInfo());
+    }
+
+    function findCourse() {
+      print('Пошук курсу за платформою:', true);
+      let platform = prompt('Введіть платформу:', 'Udemy');
+      const found = courses.find(course => course.platform.toLowerCase() === platform.toLowerCase());
+      if (found) {
+        found.courseInfo();
+      } else {
+        print('Курс не знайдено');
+      }
+    }
+
+    function addCourse() {
+      print('Додавання курсу:', true);
+      let name = prompt('Введіть назву курсу:');
+      let platform = prompt('Введіть платформу:');
+      let duration = +prompt('Введіть тривалість (годин):');
+      let completed = confirm('Чи завершено курс?');
+      let certificate = confirm('Чи є сертифікат?');
+
+      courses.push(createCourse(name, platform, duration, completed, certificate));
+      courses.forEach(course => course.courseInfo());
+    }
+
+    function completeCourse() {
+      print('Позначити курс завершеним:', true);
+      let name = prompt('Введіть назву курсу:', 'HTML і CSS');
+      const found = courses.find(course => course.name.toLowerCase() === name.toLowerCase());
+      if (found) {
+        found.markAsCompleted();
+        found.courseInfo();
+      } else {
+        print('Курс не знайдено');
+      }
+    }
+
+    function averageDuration() {
+      const sum = courses.reduce((total, course) => total + course.duration, 0);
+      print('Середня тривалість курсів: ' + (sum / courses.length) + ' год', true);
+    }
+  </script>
+</body>
+</html>
